@@ -10,8 +10,8 @@ namespace Hauturu
         public readonly List<BotCommand> Commands = new()
         {
             new BotCommand { Command = "/start", Description = "starts the bot" },
-            new BotCommand { Command = "/help", Description = "shows list of features" },
-            new BotCommand { Command = "/settings", Description = "sets the bot preferences" }
+        /*  new BotCommand { Command = "/help", Description = "shows list of features" },
+            new BotCommand { Command = "/settings", Description = "sets the bot preferences" } */
         };
 
         public BotData()
@@ -25,7 +25,7 @@ namespace Hauturu
         private class JsonData
         {
             [JsonPropertyName("bot_token")]
-            public string? Token { get; set; }
+            public string Token { get; set; }
         }
     }
 }

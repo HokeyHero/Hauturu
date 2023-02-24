@@ -2,7 +2,7 @@
 
 ## Description
 
-**Hauturu** — open-source [Telegram bot](https://t.me/HauturuBot) for finding definitions and learning new words.  
+**Hauturu** — open-source [Telegram-bot](https://t.me/HauturuBot) for finding definitions and learning new words.  
 Find words by using presented dictionaries and word lists, or create your own.  
 Practice with exercises for learning new words and remember already learned.
 
