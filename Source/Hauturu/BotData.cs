@@ -16,7 +16,7 @@ namespace Hauturu
 
         public BotData()
         {
-            var file = new FileStream("Configuration.json", FileMode.Open);
+            var file = new FileStream("Configuration.json", FileMode.OpenOrCreate);
             var jsonData = JsonSerializer.Deserialize<JsonData>(file);
 
             Token = jsonData.Token;

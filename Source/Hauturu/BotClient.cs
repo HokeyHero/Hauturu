@@ -21,7 +21,12 @@ namespace Hauturu
                 cancellationToken: cts.Token
                 );
 
-            await bot.SetMyCommandsAsync(data.Commands); 
+            await bot.SetMyCommandsAsync(data.Commands);
+
+            var dictionary = new Dictionary();
+            var word = await dictionary.GetWordDefinition("word");
+            if (word != null)
+                Console.WriteLine(word.Word);
 
             var me = await bot.GetMeAsync();
             Console.WriteLine($"Starting listening for {me.FirstName}.");
