@@ -23,11 +23,6 @@ namespace Hauturu
 
             await bot.SetMyCommandsAsync(data.Commands);
 
-            var dictionary = new Dictionary();
-            var word = await dictionary.GetWordDefinition("word");
-            if (word != null)
-                Console.WriteLine(word.Word);
-
             var me = await bot.GetMeAsync();
             Console.WriteLine($"Starting listening for {me.FirstName}.");
             Console.ReadLine();
@@ -41,6 +36,9 @@ namespace Hauturu
             {
                 case UpdateType.Message:
                     await HandleMessageAsync(bot, update.Message, cancellationToken);
+                    break;
+                case UpdateType.CallbackQuery:
+                    await HandleCallbackQueryAsync(bot, update.CallbackQuery, cancellationToken);
                     break;
             }
         }
@@ -57,23 +55,33 @@ namespace Hauturu
 
         async Task HandleTextMessageAsync(ITelegramBotClient bot, Message message, CancellationToken cancellationToken)
         {
-            switch (message.Text)
+            var answer = message.Text switch
             {
-                case "/start":
-                    await bot.SendTextMessageAsync(
-                        chatId: message.Chat.Id,
-                        replyToMessageId: message.MessageId,
-                        parseMode: ParseMode.MarkdownV2,
-                        disableWebPagePreview: true,
-                        text: "*Hauturu* — open\\-source Telegram\\-bot for finding definitions and learning new words\\. \n" +
-                              "Find words by using presented dictionaries and word lists, or create your own\\. \n" +
-                              "Practice with exercises for learning new words and remember already learned\\. \n\n" +
-                              "Name of the project inspired by [*kakapo*](https://en.wikipedia.org/wiki/K%C4%81k%C4%81p%C5%8D) — one of the oldest bird on the earth\\. \n" +
-                              "Kakapo is _endangered species_ today\\. Arrival of humans was _main factor in the decline of the kakapo_\\.\n\n" +
-                              "Source code of the project published in [*GitHub*](https://github.com/HokeyHero/Hauturu)\\.",
-                        cancellationToken: cancellationToken
-                        );
-                    break;
+                "/start" => await Commands.RunStartAsync(bot, message, cancellationToken),
+                _ => await Commands.RunDefinitionAsync(bot, message, cancellationToken)
+            };
+        }
+
+        async Task HandleCallbackQueryAsync(ITelegramBotClient bot, CallbackQuery query, CancellationToken cancellationToken)
+        {
+            await bot.AnswerCallbackQueryAsync(
+                callbackQueryId: query.Id,
+                cancellationToken: cancellationToken
+                );
+
+            if (query.Data == "delete")
+            {
+                await bot.DeleteMessageAsync(
+                    chatId: query.Message.Chat.Id,
+                    messageId: query.Message.MessageId,
+                    cancellationToken: cancellationToken
+                    );
+
+                await bot.DeleteMessageAsync(
+                    chatId: query.Message.Chat.Id,
+                    messageId: query.Message.ReplyToMessage.MessageId,
+                    cancellationToken: cancellationToken
+                    );
             }
         }
 

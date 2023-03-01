@@ -3,20 +3,26 @@ using System.Text.Json.Serialization;
 
 namespace Hauturu
 {
-    internal class Dictionary
+    internal class DictionaryClient
     {
-        public async Task<WordData> GetWordDefinition(string word)
+        public async Task<WordData?> GetDefinitionAsync(string word)
         {
-            var response = await GetResponse($"https://api.dictionaryapi.dev/api/v2/entries/en/{word}");
-            var definition = new List<WordData>();
+            var response = await GetResponseAsync($"https://api.dictionaryapi.dev/api/v2/entries/en/{word}");
+            List<WordData>? definition;
 
-            try { definition = JsonSerializer.Deserialize<List<WordData>>(response); }
-            catch (Exception) { return null; }
+            try
+            {
+                definition = JsonSerializer.Deserialize<List<WordData>>(response);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
 
             return definition[0];
         }
 
-        async Task<string> GetResponse(string url)
+        async Task<string> GetResponseAsync(string url)
         {
             HttpClient httpClient = new();
             var request = new HttpRequestMessage(HttpMethod.Get, url);

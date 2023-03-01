@@ -9,7 +9,7 @@ Practice with exercises for learning new words and remember already learned.
 Name of the project inspired by **[kakapo](https://en.wikipedia.org/wiki/K%C4%81k%C4%81p%C5%8D)** — one of the oldest bird on the earth.  
 Kakapo is _endangered species_ today. Arrival of humans was _main factor in the decline of the kakapo_.
 
-The project is based on [TelegramBot client](https://github.com/TelegramBots/Telegram.Bot).
+The project is based on [TelegramBot client](https://github.com/TelegramBots/Telegram.Bot) and uses [Free Dictionary API](https://github.com/meetDeveloper/freeDictionaryAPI).
 
 ## License
 
