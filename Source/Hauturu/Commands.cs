@@ -1,13 +1,15 @@
 ﻿using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Hauturu
 {
     internal class Commands
     {
-        public static async Task<Message> RunStartAsync(ITelegramBotClient bot, Message message, CancellationToken cancellationToken)
+        private readonly ITelegramBotClient _bot;
+        private readonly Logger _logger;
+
+        public async Task<Message> RunStartAsync(Message message, CancellationToken cancellationToken)
         {
             string text = "*Hauturu* — open\\-source Telegram\\-bot for finding definitions and learning new words\\.\n" +
                           "Find words by using presented dictionaries and word lists, or create your own\\.\n" +
@@ -16,9 +18,10 @@ namespace Hauturu
                           "Kakapo is _endangered species_ today\\. Arrival of humans was _main factor in the decline of the kakapo_\\.\n\n" +
                           "Source code of the project published in [*GitHub*](https://github.com/HokeyHero/Hauturu)\\.\n\n";
 
-            return await bot.SendTextMessageAsync(
+            return await _bot.SendTextMessageAsync(
                        chatId: message.Chat.Id,
                        replyToMessageId: message.MessageId,
+                       replyMarkup: Markups.InlineKeyboard.Delete,
                        parseMode: ParseMode.MarkdownV2,
                        disableWebPagePreview: true,
                        text: text,
@@ -26,9 +29,9 @@ namespace Hauturu
                        );
         }
 
-        public static async Task<Message> RunDefinitionAsync(ITelegramBotClient bot, Message message, CancellationToken cancellationToken)
+        public async Task<Message> RunDefinitionAsync(Message message, CancellationToken cancellationToken)
         {
-            var dictionary = new DictionaryClient();
+            var dictionary = new Dictionaries();
             var response = await dictionary.GetDefinitionAsync(message.Text);
             string text;
 
@@ -65,10 +68,10 @@ namespace Hauturu
                 }
             }
 
-            return await bot.SendTextMessageAsync(
+            return await _bot.SendTextMessageAsync(
                        chatId: message.Chat.Id,
                        replyToMessageId: message.MessageId,
-                       replyMarkup: new InlineKeyboardMarkup(new[] { new[] { InlineKeyboardButton.WithCallbackData(text: "Delete", callbackData: "delete") } } ),
+                       replyMarkup: Markups.InlineKeyboard.Delete,
                        parseMode: ParseMode.MarkdownV2,
                        text: text,
                        cancellationToken: cancellationToken
@@ -84,6 +87,12 @@ namespace Hauturu
             }
 
             return input;
+        }
+
+        public Commands(ITelegramBotClient bot, Logger logger)
+        {
+            _bot = bot;
+            _logger = logger;
         }
     }
 }
